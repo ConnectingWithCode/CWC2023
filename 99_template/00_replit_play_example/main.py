@@ -1,7 +1,7 @@
 import play
 
 cwc_text = play.new_text("Connecting with Code", y=-200, color=(128,0,0), font_size=100)
-cwc_logo = play.new_image("cwc_logo.png", x=0, y=100, size=50)
+cwc_logo = play.new_image("cwc_logo.png", y=100, size=50)
 
 
 @play.repeat_forever
