@@ -1,60 +1,82 @@
 import play
 import random
-
-print("Save the Fish")
+import time
 
 play.new_image("underwater.png")
+message = play.new_text("Fish remaining = 3",
+                        color="yellow",
+                        font_size=30,
+                        y = 280)
 
-diver = play.new_image("diver.png", x=-350, y=-250, size=33)
-diver.game_over = False
+diver = play.new_image("diver.png",
+                      x=-350,
+                      size=33)
 
-message = play.new_text("3", x=-300, y=275, color='yellow')
+diver.is_game_over = False
+diver.start_time = time.time()
+diver.end_time = 0
 
-jars = []
+fish_list = []
+for k in range(3):
+  fish = play.new_image("fish.png",
+                       x=-350,
+                       y=random.randint(-275, 275),
+                       size=33)
+  fish.speed_x = random.randint(1, 4)
+  fish.speed_y = random.randint(3, 6)
+  fish_list.append(fish)
+
+jar_list = []
 
 @play.repeat_forever
-async def create_jars():
-    jar = play.new_image("jar.png", x=400, y=random.randint(-275, 275))
-    jars.append(jar)
-    await play.timer(seconds=0.8)
+async def create_jar():
+  if diver.is_game_over:
+    return
+  jar = play.new_image("jar.png",
+                      x=400,
+                      y=random.randint(-280, 280),
+                      size=50)
+  jar_list.append(jar)
+  await play.timer(seconds=1.0)
 
-fishies = []
-for k in range(3):
-    fish = play.new_image("fish.png", x=-350, y=-275 + k * 275, size=33)
-    fish.speed_x = 1
-    fish.speed_y = 2
-    fishies.append(fish)
 
 @play.repeat_forever
 def forever_loop():
-    if diver.game_over:
-        message.words = "Game over"
-        return
-    diver.point_towards(play.mouse)
-    diver.move(5)
+  if diver.is_game_over:
+    message.words = f"Game over! Time = {diver.end_time - diver.start_time:.1f} seconds."
+    return
 
-    for jar in jars:
-        jar.x = jar.x - 3
-        if jar.is_touching(diver):
-            jars.remove(jar)
-            jar.remove()
+  diver.point_towards(play.mouse)
+  diver.move(5)
 
-    for fish in fishies:
-        fish.x = fish.x + fish.speed_x
-        fish.y = fish.y + fish.speed_y
-        if abs(fish.y) > 280:
-            fish.speed_y *= -1
-        if abs(fish.x) > 380:
-            fish.speed_x *= -1
+  for fish in fish_list:
+    fish.x += fish.speed_x
+    fish.y += fish.speed_y
+    if abs(fish.x) > 380:
+      fish.speed_x *= -1
+    if abs(fish.y) > 280:
+      fish.speed_y *= -1
 
-        for jar in jars:
-            if fish.is_touching(jar):
-                fishies.remove(fish)
-                fish.remove()
-                message.words = len(fishies)
+  for jar in jar_list:
+    jar.x -= 3
+    if jar.is_touching(diver):
+      jar_list.remove(jar)
+      jar.remove()
+    if jar.x < -400:
+      jar_list.remove(jar)
+      jar.remove()
 
-        if len(fishies) == 0:
-            diver.game_over = True
+  for fish in fish_list:
+    for jar in jar_list:
+      if fish.is_touching(jar):
+        jar_list.remove(jar)
+        jar.remove()
+        fish_list.remove(fish)
+        fish.remove()
+        message.words = f"Fish remaining = {len(fish_list)}"
 
+  if len(fish_list) == 0:
+    diver.is_game_over = True
+    diver.end_time = time.time()
 
 play.start_program()
