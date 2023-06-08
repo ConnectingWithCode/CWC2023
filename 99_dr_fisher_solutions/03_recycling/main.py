@@ -43,7 +43,7 @@ def control_bin():
     bin.x = bin.x + 15
   if play.key_is_pressed("t"):
     bin.isTrash = True
-    bin.image = "trash.png"
+    bin.image = "chromebook.png"
   elif play.key_is_pressed("r"):
     bin.isTrash = False
     bin.image = "recycle.png"

@@ -22,6 +22,22 @@ def draw_box(turtle):
         turtle.left(90)
 
 
+def draw_roof(turtle):
+    jump_to(turtle, -100, 0)
+    for k in range(3):
+        turtle.forward(200)
+        turtle.left(120)
+
+
+def draw_door(turtle):
+    jump_to(turtle, -25, -160)
+    for k in range(2):
+        turtle.forward(50)
+        turtle.left(90)
+        turtle.forward(100)
+        turtle.left(90)
+
+
 def main():
     print("Build a House")
     turtle = rg.SimpleTurtle("turtle")
@@ -33,6 +49,10 @@ def main():
             draw_chimney(turtle)
         if selection == "2":
             draw_box(turtle)
+        if selection == "3":
+            draw_roof(turtle)
+        if selection == "4":
+            draw_door(turtle)
         if selection == "r":
             turtle.pen = rg.Pen("red", 5)
         if selection == "g":
