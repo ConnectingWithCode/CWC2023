@@ -93,12 +93,28 @@ async def create_objects():
   await play.timer(seconds=2)
 
 
+  #@play.repeat_forever
+ # def control_motion():
+    #if bin.game_over:
+     # return
+   # for item in falling_items:
+      #  item.y -= 4
+      #  if item.is_touching(bin):
+      #    if item.isTrash == bin.isTrash:
+       #       bin.caughtCorrectly += 1
+       #   else:
+        #      bin.caughtIncorrectly += 1
+        #  falling_items.remove(item)
+         # item.remove()
+
+
+
 @play.repeat_forever
 def control_motion():
   if bin.game_over:
     return
   for item in falling_items:
-    item.y = item.y - 4
+    item.y -= 4
     if item.is_touching(bin):
       if item.isTrash == bin.isTrash:
         bin.caughtCorrectly += 1
